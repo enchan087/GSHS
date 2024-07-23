@@ -6,7 +6,7 @@ import zlib
 def calculate_entropy(text):
     counter = Counter(text)
     length = len(text)
-    return -sum((count / length) * np.log2(count / length) for count in counter.values())
+    return -sum((count / length) * np.log(count / length) for count in counter.values())
 
 def frequency_analysis(text):
     counter = Counter(text)
