@@ -1,58 +1,49 @@
 import numpy as np
 import hashlib
 
-
-# 평문에서 키 추출(혹은 개인에 따라 지정해도 됨) -> 아스키코드 합 사용
 def extract_key(text):
+    """평문에서 키를 추출합니다. 여기서는 아스키 코드의 합을 사용합니다."""
     ascii_sum = sum(ord(char) for char in text)
     return ascii_sum % (2 * np.pi)  # 키를 0과 2π 사이로 정규화
 
-
-# 암호화
 def encrypt(text):
-    key = extract_key(text)  # 평문에서 키를 추출
+    """삼각 함수를 이용하여 문자열을 암호화합니다."""
+    key = extract_key(text)  # 평문에서 키를 추출합니다.
     numbers = [ord(char) for char in text]
     # 0과 2π 사이로 정규화
     normalized_numbers = [(num / 255.0) * 2 * np.pi for num in numbers]
     # 키를 사용하여 변환
     encrypted_numbers = [np.exp(1j * (num + key)) for num in normalized_numbers]
-
+    
     # 암호화된 복소수들을 문자열로 변환
-    encrypted_strings = [
-        f"{num.real:.2f} + {num.imag:.2f}j" for num in encrypted_numbers
-    ]
-
+    encrypted_strings = [f'{num.real:.2f} + {num.imag:.2f}j' for num in encrypted_numbers]
+    
     # 문자열을 하나로 합침
-    combined_string = ", ".join(encrypted_strings)
-
+    combined_string = ', '.join(encrypted_strings)
+    
     # 문자열을 해싱
     hashed_value = hashlib.sha256(combined_string.encode()).hexdigest()
-
+    
     return combined_string, hashed_value
 
-
-# 복호화
 def decrypt(encrypted_string, text):
-    key = extract_key(text)  # 평문에서 키를 추출
-
+    """암호화된 복소수를 삼각 함수 역변환을 이용하여 복호화합니다."""
+    key = extract_key(text)  # 평문에서 키를 추출합니다.
+    
     # 암호화된 문자열을 복소수로 변환
-    encrypted_strings = encrypted_string.split(", ")
-    encrypted_numbers = [
-        complex(num.replace("j", "j").replace(" + ", "+").replace(" ", ""))
-        for num in encrypted_strings
-    ]
-
+    encrypted_strings = encrypted_string.split(', ')
+    encrypted_numbers = [complex(num.replace('j', 'j').replace(' + ', '+').replace(' ', '')) for num in encrypted_strings]
+    
     decrypted_angles = [np.angle(num) - key for num in encrypted_numbers]
     decrypted_angles = [(angle + 2 * np.pi) % (2 * np.pi) for angle in decrypted_angles]
     decrypted_numbers = [(angle / (2 * np.pi)) * 255.0 for angle in decrypted_angles]
     decrypted_numbers = [int(round(num)) for num in decrypted_numbers]
     decrypted_numbers = [min(max(num, 0), 255) for num in decrypted_numbers]
-
+    
     return "".join(chr(num) for num in decrypted_numbers)
 
-
 # 테스트
-original_text = "I LOVE U TEACHER S2"
+original_text = "asdf asf"  # 공백이 포함된 텍스트
 print(f"Original Text: {original_text}")
 
 # 암호화
