@@ -42,6 +42,9 @@ def text_to_complex(text):
         complex_numbers.append(z)
     return complex_numbers
 
+# 평문
+message = "_MAGEUWHAN_1:13"
+
 complex_numbers = text_to_complex(message)
 
 # 암호화 과정
@@ -78,9 +81,6 @@ def hash_encrypted_numbers(encrypted_numbers):
     serialized_numbers = serialize_encrypted_numbers(encrypted_numbers)
     hash_object = hashlib.sha256(serialized_numbers.encode())
     return hash_object.hexdigest()
-
-# 평문
-message = "_MAGEUWHAN_1:13"
 
 # 암호문 생성
 hashed_ciphertext = hash_encrypted_numbers(encrypted_numbers)
