@@ -44,7 +44,7 @@ def index_of_coincidence(text):
 
 def analyze_encryption(ciphertext):
     entropy = calculate_entropy(ciphertext)
-    max_entropy = np.log2(len(set(ciphertext)))
+    max_entropy = np.log(len(set(ciphertext)))
     print(f"Entropy: {entropy} (Max: {max_entropy})")
 
     freq = frequency_analysis(ciphertext)
@@ -78,6 +78,5 @@ def analyze_encryption(ciphertext):
     plt.tight_layout()
     plt.show()
 
-if __name__ == "__main__":
-    ciphertext = input("||Input Ciphertext: ")
-    analyze_encryption(ciphertext)
+ciphertext = input("||Input Ciphertext: ")
+analyze_encryption(ciphertext)
