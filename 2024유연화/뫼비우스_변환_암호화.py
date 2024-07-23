@@ -31,6 +31,9 @@ def extract_angles(text):
         angles.append((theta, phi, psi))
     return angles
 
+# 평문
+message = "_MAGEUWHAN_1:13"
+
 angles = extract_angles(message)
 
 # 평문을 복소수로 변환
@@ -41,9 +44,6 @@ def text_to_complex(text):
         z = complex(ascii_val, 0)
         complex_numbers.append(z)
     return complex_numbers
-
-# 평문
-message = "_MAGEUWHAN_1:13"
 
 complex_numbers = text_to_complex(message)
 
