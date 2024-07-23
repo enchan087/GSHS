@@ -7,21 +7,18 @@ def su2_matrix(theta, phi, psi):
     beta = np.sin(theta / 2) * np.exp(1j * (phi - psi) / 2)
     return np.array([[alpha, beta], [-np.conj(beta), np.conj(alpha)]])
 
-# 모비우스 변환 함수
+# 뫼비우스 변환 함수
 def mobius_transform(z, U):
     a, b = U[0, 0], U[0, 1]
     c, d = U[1, 0], U[1, 1]
     return (a * z + b) / (c * z + d)
 
-# 모비우스 변환 역함수
+# 뫼비우스 변환 역함수
 def inverse_mobius_transform(w, U):
     a, b = U[0, 0], U[0, 1]
     c, d = U[1, 0], U[1, 1]
     det_inv = 1 / (a * d - b * c)
     return det_inv * (d * w - b) / (a - c * w)
-
-# 평문 메시지
-message = "HELLOW"
 
 # 평문에서 각도 추출
 def extract_angles(text):
@@ -72,7 +69,7 @@ def complex_to_text(complex_numbers):
 
 decrypted_message = complex_to_text(decrypted_numbers)
 
-# 직렬화: 암호화된 좌표쌍들을 문자열로 변환 (numpy.complex 제외)
+# 직렬화: 암호화된 좌표쌍들을 문자열로 변환
 def serialize_encrypted_numbers(encrypted_numbers):
     return ','.join(f"{z.real:.6f}+{z.imag:.6f}j" for z in encrypted_numbers)
 
@@ -81,6 +78,9 @@ def hash_encrypted_numbers(encrypted_numbers):
     serialized_numbers = serialize_encrypted_numbers(encrypted_numbers)
     hash_object = hashlib.sha256(serialized_numbers.encode())
     return hash_object.hexdigest()
+
+# 평문
+message = "_MAGEUWHAN_1:13"
 
 # 암호문 생성
 hashed_ciphertext = hash_encrypted_numbers(encrypted_numbers)
