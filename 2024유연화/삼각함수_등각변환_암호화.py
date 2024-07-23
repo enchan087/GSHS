@@ -10,19 +10,13 @@ def extract_key(text):
 def encrypt(text):
     key = extract_key(text)
     numbers = [ord(char) for char in text]
-    # 0과 2π 사이로 정규화
-    normalized_numbers = [(num / 255.0) * 2 * np.pi for num in numbers]
-    # 키를 사용해 변환
-    encrypted_numbers = [np.exp(1j * (num + key)) for num in normalized_numbers]
+    normalized_numbers = [(num / 255.0) * 2 * np.pi for num in numbers] # 0과 2π 사이로 정규화
+    encrypted_numbers = [np.exp(1j * (num + key)) for num in normalized_numbers] # 키를 사용해 변환
     
-    # 암호화된 복소수들을 문자열로 변환
-    encrypted_strings = [f'{num.real:.2f} + {num.imag:.2f}j' for num in encrypted_numbers]
+    encrypted_strings = [f'{num.real:.2f} + {num.imag:.2f}j' for num in encrypted_numbers] # 암호화된 복소수들을 문자열로 변환
     
-    # 문자열을 하나로 합침
-    combined_string = ', '.join(encrypted_strings)
-    
-    # 문자열 해싱
-    hashed_value = hashlib.sha256(combined_string.encode()).hexdigest()
+    combined_string = ', '.join(encrypted_strings) # 문자열을 하나로 합침
+    hashed_value = hashlib.sha256(combined_string.encode()).hexdigest() # 해싱
     
     return combined_string, hashed_value
 
@@ -30,8 +24,7 @@ def encrypt(text):
 def decrypt(encrypted_string, text):
     key = extract_key(text)
     
-    # 암호화된 문자열을 복소수로 변환
-    encrypted_strings = encrypted_string.split(', ')
+    encrypted_strings = encrypted_string.split(', ') # 암호화된 문자열을 복소수로 변환
     encrypted_numbers = [complex(num.replace('j', 'j').replace(' + ', '+').replace(' ', '')) for num in encrypted_strings]
     
     decrypted_angles = [np.angle(num) - key for num in encrypted_numbers]
@@ -44,12 +37,10 @@ def decrypt(encrypted_string, text):
 
 original_text = "I LOVE U TEACHER S2"
 print(f"Original Text: {original_text}")
-
 # 암호화
 encrypted_string, hashed_value = encrypt(original_text)
 print(f"Encrypted String: {encrypted_string}")
 print(f"Hashed Encrypted Value: {hashed_value}")
-
 # 복호화
 decrypted_text = decrypt(encrypted_string, original_text)
 print(f"Decrypted Text: {decrypted_text}")
