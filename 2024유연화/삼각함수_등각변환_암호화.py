@@ -41,6 +41,7 @@ print(f"Original Text: {original_text}")
 encrypted_string, hashed_value = encrypt(original_text)
 print(f"Encrypted String: {encrypted_string}")
 print(f"Hashed Encrypted Value: {hashed_value}")
+
 # 복호화
 decrypted_text = decrypt(encrypted_string, original_text)
 print(f"Decrypted Text: {decrypted_text}")

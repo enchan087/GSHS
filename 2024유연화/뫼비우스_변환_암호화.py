@@ -1,5 +1,4 @@
 import numpy as np
-import hashlib
 
 # SU(2) 행렬 생성 함수
 def su2_matrix(theta, phi, psi):
@@ -31,11 +30,6 @@ def extract_angles(text):
         angles.append((theta, phi, psi))
     return angles
 
-# 평문
-message = "_MAGYUHWAN_1:13"
-
-angles = extract_angles(message)
-
 # 평문을 복소수로 변환
 def text_to_complex(text):
     complex_numbers = []
@@ -45,21 +39,7 @@ def text_to_complex(text):
         complex_numbers.append(z)
     return complex_numbers
 
-complex_numbers = text_to_complex(message)
-
-# 암호화 과정
-encrypted_numbers = []
-for z, (theta, phi, psi) in zip(complex_numbers, angles):
-    U = su2_matrix(theta, phi, psi)
-    encrypted_numbers.append(mobius_transform(z, U))
-
-# 복호화 과정
-decrypted_numbers = []
-for w, (theta, phi, psi) in zip(encrypted_numbers, angles):
-    U = su2_matrix(theta, phi, psi)
-    decrypted_numbers.append(inverse_mobius_transform(w, U))
-
-# 복호화된 메시지 확인 (복소수 -> 문자 변환)
+# 복소수에서 문자로 변환
 def complex_to_text(complex_numbers):
     text = ''
     for z in complex_numbers:
@@ -70,22 +50,41 @@ def complex_to_text(complex_numbers):
             text += '?'
     return text
 
-decrypted_message = complex_to_text(decrypted_numbers)
+# 평문
+message = "HELLOW"
 
-# 직렬화: 암호화된 좌표쌍들을 문자열로 변환
-def serialize_encrypted_numbers(encrypted_numbers):
-    return ','.join(f"{z.real:.6f}+{z.imag:.6f}j" for z in encrypted_numbers)
+# 개인키
+private_theta, private_phi, private_psi = np.pi / 4, np.pi / 3, np.pi / 6
 
-# 해싱: 암호화된 좌표쌍들을 해싱하여 암호문 생성
-def hash_encrypted_numbers(encrypted_numbers):
-    serialized_numbers = serialize_encrypted_numbers(encrypted_numbers)
-    hash_object = hashlib.sha256(serialized_numbers.encode())
-    return hash_object.hexdigest()
+# 공개키 생성
+public_key_U = su2_matrix(private_theta, private_phi, private_psi)
 
-# 암호문 생성
-hashed_ciphertext = hash_encrypted_numbers(encrypted_numbers)
+# 각도 추출
+angles = extract_angles(message)
+
+# 평문을 복소수로 변환
+complex_numbers = text_to_complex(message)
+
+# 암호화 과정
+encrypted_numbers = []
+for z, (theta, phi, psi) in zip(complex_numbers, angles):
+    U = su2_matrix(theta, phi, psi)
+    encrypted_numbers.append(mobius_transform(z, public_key_U))
+
+# 암호화된 복소수를 좌표쌍으로 저장
+encrypted_coordinates = [(z.real, z.imag) for z in encrypted_numbers]
 
 print("평문 >", message)
-print("암호화 좌표쌍 >", serialize_encrypted_numbers(encrypted_numbers))
-print("해싱(최종 암호문) >", hashed_ciphertext)
-print("복호화 문장 >", decrypted_message)
+print("암호화된 좌표쌍 >", encrypted_coordinates)
+
+# 복호화 과정
+decrypted_numbers = []
+for (x, y), (theta, phi, psi) in zip(encrypted_coordinates, angles):
+    w = complex(x, y)
+    U = su2_matrix(theta, phi, psi)
+    decrypted_numbers.append(inverse_mobius_transform(w, public_key_U))
+
+# 복호화된 메시지 확인
+decrypted_message = complex_to_text(decrypted_numbers)
+
+print("복호화된 메시지 >", decrypted_message)
