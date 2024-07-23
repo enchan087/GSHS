@@ -32,7 +32,7 @@ def extract_angles(text):
     return angles
 
 # 평문
-message = "_MAGEUWHAN_1:13"
+message = "_MAGYUHWAN_1:13"
 
 angles = extract_angles(message)
 
@@ -85,7 +85,7 @@ def hash_encrypted_numbers(encrypted_numbers):
 # 암호문 생성
 hashed_ciphertext = hash_encrypted_numbers(encrypted_numbers)
 
-print("Original Message:", message)
-print("Encrypted Numbers:", serialize_encrypted_numbers(encrypted_numbers))
-print("Hashed Ciphertext:", hashed_ciphertext)
-print("Decrypted Message:", decrypted_message)
+print("평문 >", message)
+print("암호화 좌표쌍 >", serialize_encrypted_numbers(encrypted_numbers))
+print("해싱(최종 암호문) >", hashed_ciphertext)
+print("복호화 문장 >", decrypted_message)
